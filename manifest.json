@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "WLO Metadata Agent Light",
-  "version": "2.1.4",
+  "version": "2.2.0",
   "description": "Schlankes Browser-Plugin für WLO - Schnelle Metadaten-Erfassung mit KI-Unterstützung",
   "homepage_url": "https://wirlernenonline.de/",
   

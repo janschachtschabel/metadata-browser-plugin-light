@@ -1,12 +1,13 @@
 # 🦉 WLO Metadata Agent Light
 
-**Version 2.1.4** ✅ **PRODUKTIONSREIF** - Schlankes Browser-Plugin für schnelles Teilen von Bildungsinhalten
+**Version 2.2.0** ✅ **PRODUKTIONSREIF** - Schlankes Browser-Plugin für schnelles Teilen von Bildungsinhalten
 
 ---
 
 ## ✨ Features
 
 - ✅ **Funktioniert!** - Erfolgreich getestet und einsatzbereit
+- ✅ **Dubletten-Check** - Verhindert doppelte Einreichungen (NEU in v2.2.0!)
 - ✅ **Minimalistisch** - Nur 7 Dateien, ~25 KB, keine Dependencies
 - ✅ **Gast-Modus** - Kein Login erforderlich (User-Mode kommt später)
 - ✅ **KI-gestützt** - Automatische Metadaten-Extraktion via Canvas-Webkomponente
@@ -19,17 +20,17 @@
 
 ### **Entfernt:**
 - ❌ Generischer Crawler (nicht mehr benötigt)
-- ❌ Login/User-Modus (kommt später)
-- ❌ Dubletten-Prüfung (vereinfacht)
+- ❌ Login/User-Modus (geplant für v2.3.0)
 - ❌ Komplexe Konfiguration
 
-### **Neu:**
-- ✅ Eingebaute Datenextraktion (kein externer Crawler)
-- ✅ Direkte Canvas-Integration
-- ✅ Vorschau-Link nach Submission
-- ✅ Modernere UI
-- ✅ Besseres Error-Handling
-- ✅ Notification-System
+### **Neu & Verbessert:**
+- ✅ **Dubletten-Check** - Verhindert doppelte Einreichungen ✨
+- ✅ **Eingebaute Datenextraktion** - Kein externer Crawler nötig
+- ✅ **Direkte Canvas-Integration** - Moderne KI-gestützte Extraktion
+- ✅ **Array-Normalisierung** - Kritischer Fix für Repository-API
+- ✅ **Modernere UI** - WLO-Eule mit Animationen
+- ✅ **Besseres Error-Handling** - Robuste Fehlerbehandlung
+- ✅ **In-Page Notifications** - Schöne Overlays
 
 ---
 
@@ -68,17 +69,28 @@ Oder erstelle eigene Icons (16x16, 32x32, 48x48, 128x128 px).
 6. Klicke "Einreichen" im Canvas
 7. ✅ Fertig!
 
-### **2. Workflow:**
+### **2. Workflow (mit Dubletten-Check):**
 
 ```
-Browser-Plugin
-    ↓ (extrahiert Daten)
-Canvas-Komponente
-    ↓ (KI-Analyse & Bearbeitung)
-Browser-Plugin
-    ↓ (sendet ans Repository)
-WLO Repository
-    ✅ Inhalt gespeichert
+1. Browser-Plugin
+   ↓
+2. Dubletten-Check (200-500ms)
+   ↓
+   ├─ Duplikat? → Info anzeigen + Link zum Inhalt
+   └─ Neu? ↓
+3. Datenextraktion
+   ↓
+4. Canvas-Komponente öffnet sich
+   ↓
+5. KI-Analyse & Bearbeitung
+   ↓
+6. Zurück an Plugin
+   ↓
+7. Array-Normalisierung
+   ↓
+8. Repository-Upload
+   ↓
+9. ✅ Inhalt gespeichert!
 ```
 
 ---
@@ -112,9 +124,10 @@ metadata-browser-plugin-light/
 - Empfängt Metadaten zurück
 
 **3. Repository-Submission (background.js):**
+- **Array-Normalisierung:** ALLE Werte werden zu Arrays (kritischer Fix!)
 - Erstellt Node mit 5 essentiellen Feldern
 - Setzt restliche Metadaten
-- Startet Workflow (optional)
+- Startet Workflow mit logLevel: 'info'
 - Zeigt Success/Error Notifications
 
 ---
@@ -215,28 +228,49 @@ Alle Scripts loggen ausführlich:
 
 ## 🎯 Roadmap
 
-### **v2.1.0 (geplant):**
-- [ ] Benutzer-Login (User-Mode)
-- [ ] Dubletten-Prüfung
-- [ ] Collections-Auswahl
-- [ ] Dark Mode
+### **v2.1.4 (✅ FERTIG - 2025-01-19):**
+- ✅ Array-Normalisierung implementiert
+- ✅ Error 400 behoben
+- ✅ Canvas-Integration funktioniert
+- ✅ Repository-Upload erfolgreich
 
-### **v2.2.0 (geplant):**
+### **v2.2.0 (✅ FERTIG - 2025-01-19):**
+- ✅ Dubletten-Check implementiert
+- ✅ Info-UI für gefundene Duplikate
+- ✅ Link zum bestehenden Inhalt
+
+### **v2.3.0 (geplant):**
+- [ ] Benutzer-Login (User-Mode)
+- [ ] Collections-Auswahl
+- [ ] Erweiterte Dubletten-Prüfung (Fuzzy-Match)
+
+### **v2.4.0 (geplant):**
+- [ ] Dark Mode
 - [ ] Offline-Modus
 - [ ] Batch-Upload
-- [ ] Favoriten
 - [ ] Statistiken
 
 ---
 
 ## 📝 Changelog
 
+Siehe [CHANGELOG.md](./CHANGELOG.md) für vollständige Versions-Historie.
+
+### **v2.2.0 (2025-01-19) - Aktuell**
+- ✅ **Dubletten-Check** - Verhindert doppelte Einreichungen
+- ✅ Info-UI mit Link zum bestehenden Inhalt
+- ✅ Non-blocking Error Handling
+
+### **v2.1.4 (2025-01-19)**
+- ✅ **Array-Normalisierung** - Kritischer Fix!
+- ✅ Error 400 behoben
+- ✅ Funktioniert in Gast & User-Mode
+
 ### **v2.0.0 (2025-01-19)**
 - ✅ Initial Release
-- ✅ Gast-Modus implementiert
+- ✅ Gast-Modus
 - ✅ Canvas-Integration
-- ✅ Moderne UI
-- ✅ Direkter Repository-Upload
+- ✅ Moderne UI mit WLO-Eule
 
 ---
 
@@ -256,11 +290,24 @@ GPL-3.0 - Siehe LICENSE
 
 ---
 
+## 📚 Weitere Dokumentation
+
+- **QUICKSTART.md** - 5-Minuten-Guide
+- **SETUP.md** - Ausführliche Installation
+- **FEATURES.md** - Alle Features im Detail
+- **CHANGELOG.md** - Vollständige Versions-Historie
+- **STATUS.md** - Aktueller Entwicklungsstand
+- **SUCCESS.md** - Erfolgs-Story & Lessons Learned
+- **DUPLICATE_CHECK.md** - Dubletten-Check Feature (v2.2.0)
+
+---
+
 ## 🙋 Support
 
 - **FAQ:** https://wirlernenonline.de/faq/
 - **Über WLO:** https://wirlernenonline.de/about/
 - **Issues:** GitHub Issues
+- **Email:** support@wirlernenonline.de
 
 ---
 

@@ -39,6 +39,18 @@ async function handleSubmit() {
         
         console.log('🔍 Current tab:', tab.url);
         
+        // CHECK FOR DUPLICATES FIRST!
+        console.log('🔎 Checking for duplicates...');
+        const duplicateCheck = await checkForDuplicate(tab.url);
+        
+        if (duplicateCheck.exists) {
+            console.log('⚠️ Duplicate found!', duplicateCheck);
+            showDuplicateFound(duplicateCheck);
+            return; // Stop here - don't open Canvas
+        }
+        
+        console.log('✅ No duplicate, proceeding...');
+        
         // Ensure content script is injected
         console.log('💉 Injecting content script...');
         try {
@@ -89,6 +101,103 @@ async function handleSubmit() {
         
         showError(errorMsg);
     }
+}
+
+// Check for duplicate URL in repository
+async function checkForDuplicate(url) {
+    const apiUrl = 'https://repository.staging.openeduhub.net/edu-sharing/rest/search/v1/queries/-home-/mds_oeh/ngsearch?contentType=FILES&maxItems=1&skipCount=0&propertyFilter=-all-';
+    
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                criteria: [{ property: 'ccm:wwwurl', values: [url] }]
+            })
+        });
+        
+        if (!response.ok) {
+            console.warn('⚠️ Duplicate check failed, continuing anyway');
+            return { exists: false };
+        }
+        
+        const data = await response.json();
+        const nodes = Array.isArray(data?.nodes) ? data.nodes : [];
+        
+        // Find exact match
+        const exactNode = nodes.find(node => {
+            const urls = Array.isArray(node?.properties?.['ccm:wwwurl']) 
+                ? node.properties['ccm:wwwurl'] 
+                : [];
+            return urls.some(u => typeof u === 'string' && u === url);
+        });
+        
+        if (exactNode) {
+            return {
+                exists: true,
+                title: exactNode?.properties?.['cclom:title']?.[0] || exactNode.title || 'Unbekannter Titel',
+                description: exactNode?.properties?.['cclom:general_description']?.[0] || '',
+                nodeUrl: exactNode.content?.url || ''
+            };
+        }
+        
+        return { exists: false };
+        
+    } catch (error) {
+        console.error('❌ Duplicate check error:', error);
+        // Don't block on error - continue
+        return { exists: false };
+    }
+}
+
+// Show duplicate found UI
+function showDuplicateFound(duplicate) {
+    // Hide all states
+    Object.values(states).forEach(el => el.classList.add('hidden'));
+    
+    // Create duplicate state dynamically
+    const duplicateState = document.createElement('div');
+    duplicateState.className = 'state';
+    duplicateState.innerHTML = `
+        <div style="text-align: center; padding: 20px 0;">
+            <div style="font-size: 48px; margin-bottom: 16px;">ℹ️</div>
+            <h2 style="font-size: 18px; color: #2d3748; margin-bottom: 8px;">Bereits vorhanden!</h2>
+            <p style="color: #718096; font-size: 14px; margin-bottom: 20px;">
+                Dieser Inhalt existiert bereits im Repository.
+            </p>
+            
+            <div style="background: #f7fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0; text-align: left;">
+                <div style="font-weight: 600; color: #2d3748; margin-bottom: 8px; font-size: 14px;">
+                    ${duplicate.title}
+                </div>
+                ${duplicate.description ? `
+                    <div style="color: #718096; font-size: 13px; margin-bottom: 12px; line-height: 1.5;">
+                        ${duplicate.description.substring(0, 150)}${duplicate.description.length > 150 ? '...' : ''}
+                    </div>
+                ` : ''}
+                ${duplicate.nodeUrl ? `
+                    <a href="${duplicate.nodeUrl}" target="_blank" 
+                       style="display: inline-block; color: #667eea; text-decoration: none; font-weight: 600; font-size: 13px;">
+                        Im Repository öffnen →
+                    </a>
+                ` : ''}
+            </div>
+            
+            <button id="close-duplicate-btn" class="btn btn-secondary" style="margin-top: 12px;">
+                Schließen
+            </button>
+        </div>
+    `;
+    
+    document.querySelector('.content').appendChild(duplicateState);
+    
+    // Close button handler
+    document.getElementById('close-duplicate-btn').addEventListener('click', () => {
+        window.close();
+    });
 }
 
 function setState(newState) {

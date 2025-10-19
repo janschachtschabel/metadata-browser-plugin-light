@@ -1,5 +1,22 @@
 # 📝 Changelog - WLO Metadata Agent Light
 
+## [2.2.0] - 2025-01-19 🎉 **DUBLETTEN-CHECK HINZUGEFÜGT**
+
+### ✨ New Feature - Dubletten-Prüfung
+- **Automatische Prüfung** vor dem Öffnen der Canvas
+- **Verhindert doppelte Einreichungen** - User sieht sofort wenn URL bereits existiert
+- **Schöne Info-UI** mit Titel, Beschreibung und Link zum bestehenden Inhalt
+- **Non-blocking** - Bei API-Fehler wird normal fortgefahren
+
+### 🔧 Technical Details
+- Repository Search API Integration (`/search/v1/queries/-home-/mds_oeh/ngsearch`)
+- Exakter URL-Match auf `ccm:wwwurl` Property
+- Dynamisches Duplicate-State UI im Popup
+- Link zum Repository-Inhalt
+- Graceful error handling
+
+---
+
 ## [2.1.4] - 2025-01-19 ✅ **PRODUKTIONSREIF**
 
 ### 🎉 Major Fix - Funktioniert jetzt komplett!

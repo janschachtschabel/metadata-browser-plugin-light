@@ -1,8 +1,16 @@
 # ✅ Status - WLO Metadata Agent Light
 
-**Version:** 2.1.4  
+**Version:** 2.2.0  
 **Status:** ✅ **PRODUKTIONSREIF**  
 **Datum:** 2025-01-19
+
+## 🎉 Neuestes Feature (v2.2.0): Dubletten-Check!
+
+**Was ist neu:**
+- ✅ Automatische Prüfung ob URL bereits im Repository existiert
+- ✅ Verhindert doppelte Einreichungen
+- ✅ Zeigt Titel, Beschreibung und Link zum bestehenden Inhalt
+- ✅ Non-blocking - bei Fehler wird normal fortgefahren
 
 ---
 
